@@ -1,8 +1,4 @@
-type TitleProps = {
-  title: string;
-};
-
-function Title({ title }: TitleProps) {
+function Title() {
   return <h1>Gerenciador de senhas</h1>;
 }
 
