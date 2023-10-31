@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
-import Title from './components/Title';
+// import Title from './components/Title';
 import Form from './components/Form';
 
 function App() {
@@ -12,7 +12,7 @@ function App() {
 
   return (
     <div>
-      <Title />
+      <h1>Gerenciador de senhas</h1>
       {showForm ? (
         <Form onCancel={ changeForm } />
       ) : (

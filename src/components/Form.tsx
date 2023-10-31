@@ -34,7 +34,7 @@ function Form(props: FormProps) {
   function validandoSenha(valorSenha:string) {
     const minLength = valorSenha.length >= 8;
     const maxLength = valorSenha.length <= 16;
-    const hasLettersAndNumbers = /([A-Za-z][0-9][0-9][A-Za-z])/.test(valorSenha.toLowerCase());
+    const hasLettersAndNumbers = /[^\w\d]*(([0-9]+.*[A-Za-z]+.*)|[A-Za-z]+.*([0-9]+.*))/.test(valorSenha.toLowerCase());
     const hasSpecialCharacter = /[@#$%^&+=]/.test(valorSenha);
 
     setValidacaoDeSenha({
@@ -114,11 +114,9 @@ function Form(props: FormProps) {
       <input type="text" id="url" />
       <label htmlFor="url">URL</label>
 
-      <input type="button" id="botao" />
       <label htmlFor="botao">Cadastrar</label>
       <button disabled={ habilitarBotao }>Cadastrar</button>
 
-      <input type="button" id="botao" />
       <label htmlFor="botao">Cancelar</label>
       <button onClick={ onCancel }>Cancelar</button>
     </div>
