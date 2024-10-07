@@ -1,126 +1,135 @@
-import React, { useState } from 'react';
-
 type FormProps = {
-  onCancel: () => void;
+  onCancelar: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  form: {
+    serviceName: string;
+    login: string;
+    password: string;
+    url: string;
+  }
+  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSubmit: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  handleControlPassword: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  hidePassword: boolean;
+  showForm: boolean;
 };
 
-function Form(props: FormProps) {
-  const { onCancel } = props;
-  const [nomeServico, setNomeServico] = useState('');
-  const [login, setLogin] = useState('');
-  const [senha, setSenha] = useState('');
-  const [habilitarBotao, setHabilitarBotao] = useState(true);
+function Form({ showForm, onCancelar, form, handleChange, handleSubmit,
+  handleControlPassword, hidePassword } : FormProps) {
+  const validateForm = () => {
+    const hasLettersAndNumbers = /[A-Za-z].*\d|\d.*[A-Za-z]/;
+    const hasSpecialCharacter = /[@#$%^&+=]/;
 
-  const [validacaoDeSenha, setValidacaoDeSenha] = useState({
-    minLength: false,
-    maxLength: false,
-    hasLettersAndNumbers: false,
-    hasSpecialCharacter: false,
-  });
+    const serviceValid = form.serviceName !== '';
+    const loginValid = form.login !== '';
+    const passwordValid1 = form.password.length >= 8;
+    const passwordValid2 = form.password.length <= 16;
+    const passwordValid3 = hasLettersAndNumbers.test(form.password);
+    const passwordValid4 = hasSpecialCharacter.test(form.password);
 
-  const invalidPasswordMessage = 'invalid-password-check';
-  const validPasswordMessage = 'valid-password-check';
+    return serviceValid && loginValid
+      && passwordValid1 && passwordValid2
+      && passwordValid3 && passwordValid4;
+  };
 
-  function handleHabilitarBotao() {
-    if (
-      nomeServico !== ''
-      && login !== ''
-      && Object.values(validacaoDeSenha).every((check) => check === true)
-    ) {
-      setHabilitarBotao(false);
-    }
-  }
+  const isPasswordValid = (password: string) => password.length >= 8;
+  const isPasswordValid2 = (password: string) => password.length <= 16;
+  const hasLettersAndNumbers = /[A-Za-z].*\d|\d.*[A-Za-z]/;
+  const isPasswordValid3 = (password: string) => hasLettersAndNumbers.test(form.password);
+  const hasSpecialCharacter = /[@#$%^&+=]/;
+  const isPasswordValid4 = (password: string) => hasSpecialCharacter.test(form.password);
 
-  function validandoSenha(valorSenha:string) {
-    const minLength = valorSenha.length >= 8;
-    const maxLength = valorSenha.length <= 16;
-    const hasLettersAndNumbers = /[^\w\d]*(([0-9]+.*[A-Za-z]+.*)|[A-Za-z]+.*([0-9]+.*))/.test(valorSenha.toLowerCase());
-    const hasSpecialCharacter = /[@#$%^&+=]/.test(valorSenha);
-
-    setValidacaoDeSenha({
-      minLength,
-      maxLength,
-      hasLettersAndNumbers,
-      hasSpecialCharacter,
-    });
-
-    return minLength && maxLength && hasLettersAndNumbers && hasSpecialCharacter;
-  }
+  const validPasswordPhase = 'valid-password-check';
+  const invalidPasswordPhase = 'invalid-password-check';
 
   return (
-    <div>
-      <input
-        type="text"
-        id="nomeServico"
-        value={ nomeServico }
-        onChange={ ({ target }) => {
-          setNomeServico(target.value);
-          handleHabilitarBotao();
-        } }
-      />
-      <label htmlFor="nomeServico">Nome do serviço</label>
+    <form>
 
-      <input
-        type="text"
-        id="login"
-        value={ login }
-        onChange={ ({ target }) => {
-          setLogin(target.value);
-          handleHabilitarBotao();
-        } }
-      />
-      <label htmlFor="login">Login</label>
+      <label htmlFor="serviceName">
+        Nome do serviço
+        <input
+          id="serviceName"
+          type="text"
+          name="serviceName"
+          value={ form.serviceName }
+          onChange={ handleChange }
+        />
+      </label>
 
-      <input
-        type="password"
-        id="senha"
-        value={ senha }
-        onChange={ ({ target }) => {
-          setSenha(target.value);
-          handleHabilitarBotao();
-          validandoSenha(target.value);
-        } }
-      />
-      <label htmlFor="senha">Senha</label>
+      <label htmlFor="text">
+        Login
+        <input
+          id="text"
+          type="text"
+          name="login"
+          value={ form.login }
+          onChange={ handleChange }
+        />
+      </label>
 
-      <div>
-        <p>A senha deverá: </p>
+      <label htmlFor="password">
+        Senha
+        <input
+          id="password"
+          type="password"
+          name="password"
+          value={ form.password }
+          onChange={ handleChange }
+        />
+      </label>
+
+      <label htmlFor="url">
+        URL
+        <input
+          id="url"
+          type="text"
+          name="url"
+          value={ form.url }
+          onChange={ handleChange }
+        />
+      </label>
+
+      <section>
+        <p>A senha deve:</p>
         <p
-          className={ validacaoDeSenha.minLength ? validPasswordMessage
-            : invalidPasswordMessage }
+          className={ isPasswordValid(form.password)
+            ? validPasswordPhase : invalidPasswordPhase }
         >
           Possuir 8 ou mais caracteres
         </p>
         <p
-          className={ validacaoDeSenha.maxLength ? validPasswordMessage
-            : invalidPasswordMessage }
+          className={ isPasswordValid2(form.password)
+            ? validPasswordPhase : invalidPasswordPhase }
         >
           Possuir até 16 caracteres
         </p>
         <p
-          className={ validacaoDeSenha.hasLettersAndNumbers ? validPasswordMessage
-            : invalidPasswordMessage }
+          className={ isPasswordValid3(form.password)
+            ? validPasswordPhase : invalidPasswordPhase }
         >
           Possuir letras e números
         </p>
         <p
-          className={ validacaoDeSenha.hasSpecialCharacter ? validPasswordMessage
-            : invalidPasswordMessage }
+          className={ isPasswordValid4(form.password)
+            ? validPasswordPhase : invalidPasswordPhase }
         >
           Possuir algum caractere especial
         </p>
-      </div>
+      </section>
 
-      <input type="text" id="url" />
-      <label htmlFor="url">URL</label>
+      <button
+        type="submit"
+        disabled={ !validateForm() }
+        onClick={ handleSubmit }
+      >
+        Cadastrar
+      </button>
+      <button
+        onClick={ onCancelar }
+      >
+        Cancelar
+      </button>
 
-      <label htmlFor="botao">Cadastrar</label>
-      <button disabled={ habilitarBotao }>Cadastrar</button>
-
-      <label htmlFor="botao">Cancelar</label>
-      <button onClick={ onCancel }>Cancelar</button>
-    </div>
+    </form>
   );
 }
-
 export default Form;
